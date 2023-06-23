@@ -1,0 +1,6 @@
+loguru
+sfapi_client
+schedule
+sqlalchemy
+psycopg2
+pandas
