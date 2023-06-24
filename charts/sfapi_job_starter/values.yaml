@@ -9,6 +9,7 @@ daemon:
     START_NEW_JOBS: "600"
     TOTAL_JOBS: "0"
     USER_NAME: ""
+    KEY_FILE: ""
   repository:
     image: tylern4/sfapi_job_starter
     tag: dev
