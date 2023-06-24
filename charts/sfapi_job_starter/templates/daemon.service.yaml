@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: '{{ .Release.Name }}-daemon'
+  labels:
+    component: daemon
+    project: '{{ .Chart.Name }}'
+    release: '{{ .Release.Name }}'

@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: '{{ .Release.Name }}-daemon'
+  labels:
+    component: daemon
+    project: '{{ .Chart.Name }}'
+    release: '{{ .Release.Name }}'
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: daemon
+      release: '{{ .Release.Name }}'
+  template:
+    metadata:
+      labels:
+        component: daemon
+        release: '{{ .Release.Name }}'
+    spec:
+      initContainers:
+        - name: check-db
+          image: busybox
+          command:
+            - sh
+            - -c
+            - |-
+              OK=0
+              echo "Checking db port"
+              while [ $OK != 1 ]; do
+                  echo -n "."
+                  nc -z {{ .Release.Name }}-db 5432 2>&1 >/dev/null && OK=1 || sleep 1
+              done
+              echo
+              echo "Done"
+      containers:
+        - name: daemon
+          image: '{{ .Values.daemon.repository.image }}{{ if ne .Values.daemon.repository.tag "" }}:{{ .Values.daemon.repository.tag }}{{ end }}'
+          ports:
+            - name: daemon
+              containerPort: 3000
+          env:
+            - name: TOTAL_JOBS
+              value: '{{ tpl .Values.daemon.environment.TOTAL_JOBS . }}'
+            - name: DB_NAME
+              value: '{{ tpl .Values.daemon.environment.DB_NAME . }}'
+            - name: USER_NAME
+              value: '{{ tpl .Values.daemon.environment.USER_NAME . }}'
+            - name: DB_USER
+              value: '{{ tpl .Values.daemon.environment.DB_USER . }}'
+            - name: START_NEW_JOBS
+              value: '{{ tpl .Values.daemon.environment.START_NEW_JOBS . }}'
+            - name: DB_UPDATE_TIME
+              value: '{{ tpl .Values.daemon.environment.DB_UPDATE_TIME . }}'
+            - name: DB_PASSWORD
+              value: '{{ tpl .Values.daemon.environment.DB_PASSWORD . }}'
+            - name: DB_HOST
+              value: '{{ tpl .Values.daemon.environment.DB_HOST . }}'
+            - name: DB_PORT
+              value: '{{ tpl .Values.daemon.environment.DB_PORT . }}'
+
