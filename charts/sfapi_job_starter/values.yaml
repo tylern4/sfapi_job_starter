@@ -10,8 +10,8 @@ daemon:
     TOTAL_JOBS: "0"
     USER_NAME: ""
   repository:
-    image: sfapi_job_daemon
-    tag: ""
+    image: tylern4/sfapi_job_starter
+    tag: dev
 db:
   environment:
     POSTGRES_PASSWORD: password

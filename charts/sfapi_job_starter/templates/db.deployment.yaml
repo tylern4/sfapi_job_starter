@@ -29,14 +29,14 @@ spec:
             capabilities:
               add:
                 - DAC_OVERRIDE
-                - CHOWN
                 - SETGID
                 - SETUID
+                - CHOWN
                 - FOWNER
               drop:
                 - ALL
             privileged: false
-            readOnlyRootFilesystem: true
+            readOnlyRootFilesystem: false
           env:
             - name: POSTGRES_USER
               value: '{{ tpl .Values.db.environment.POSTGRES_USER . }}'
