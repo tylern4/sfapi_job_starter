@@ -36,6 +36,19 @@ spec:
       containers:
         - name: daemon
           image: '{{ .Values.daemon.repository.image }}{{ if ne .Values.daemon.repository.tag "" }}:{{ .Values.daemon.repository.tag }}{{ end }}'
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              add:
+                - DAC_OVERRIDE
+                - CHOWN
+                - SETGID
+                - SETUID
+                - FOWNER
+              drop:
+                - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
           env:
             - name: TOTAL_JOBS
               value: '{{ tpl .Values.daemon.environment.TOTAL_JOBS . }}'
