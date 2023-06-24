@@ -22,8 +22,9 @@ spec:
         - name: db
           image: '{{ .Values.db.repository.image }}{{ if ne .Values.db.repository.tag "" }}:{{ .Values.db.repository.tag }}{{ end }}'
           ports:
-            - name: db
-              containerPort: 5432
+            - containerPort: 5432
+              name: db
+              protocol: TCP
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
@@ -48,9 +49,6 @@ spec:
             - log_statement=ddl
             - -c
             - log_destination=stderr
-          volumeMounts:
-            - mountPath: /var/lib/postgresql/data
-              name: db
           livenessProbe:
             exec:
               command:
@@ -59,12 +57,4 @@ spec:
             initialDelaySeconds: 0
             successThreshold: 1
             failureThreshold: 5
-      volumes:
-        - name: db
-          {{- if  .Values.db.persistence.db.enabled }}
-          persistentVolumeClaim:
-            claimName: '{{ .Release.Name }}-db'
-          {{ else }}
-          emptyDir: {}
-          {{- end }}
 
