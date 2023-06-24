@@ -50,14 +50,4 @@ spec:
             - -c 
             - max_connections=200
             - log_destination=stderr
-          {% comment %} 
-          livenessProbe:
-            exec:
-              command:
-                - pg_isready -U postgres
-            periodSeconds: 5
-            initialDelaySeconds: 0
-            successThreshold: 1
-            failureThreshold: 5 
-            {% endcomment %}
 
