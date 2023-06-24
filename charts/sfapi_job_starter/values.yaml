@@ -8,8 +8,8 @@ daemon:
     DB_USER: postgres
     START_NEW_JOBS: "600"
     TOTAL_JOBS: "0"
-    USER_NAME: ""
-    KEY_FILE: ""
+    USER_NAME: "tylern"
+    KEY_FILE: "/keys/superfacility/dev.pem"
   repository:
     image: tylern4/sfapi_job_starter
     tag: dev
