@@ -47,8 +47,10 @@ spec:
             - postgres
             - -c
             - log_statement=ddl
-            - -c
+            - -c 
+            - max_connections=200
             - log_destination=stderr
+          {% comment %} 
           livenessProbe:
             exec:
               command:
@@ -56,5 +58,6 @@ spec:
             periodSeconds: 5
             initialDelaySeconds: 0
             successThreshold: 1
-            failureThreshold: 5
+            failureThreshold: 5 
+            {% endcomment %}
 
