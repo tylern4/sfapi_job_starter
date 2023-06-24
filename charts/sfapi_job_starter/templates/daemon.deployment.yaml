@@ -18,21 +18,6 @@ spec:
         component: daemon
         release: '{{ .Release.Name }}'
     spec:
-      initContainers:
-        - name: check-db
-          image: busybox
-          command:
-            - sh
-            - -c
-            - |-
-              OK=0
-              echo "Checking db port"
-              while [ $OK != 1 ]; do
-                  echo -n "."
-                  nc -z {{ .Release.Name }}-db 5432 2>&1 >/dev/null && OK=1 || sleep 1
-              done
-              echo
-              echo "Done"
       containers:
         - name: daemon
           image: '{{ .Values.daemon.repository.image }}{{ if ne .Values.daemon.repository.tag "" }}:{{ .Values.daemon.repository.tag }}{{ end }}'
