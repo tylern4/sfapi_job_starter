@@ -41,6 +41,11 @@ spec:
           volumeMounts:
             - mountPath: /keys/superfacility/dev.pem
               name: vol-lbhqm
+          volumes:
+            - name: vol-lbhqm
+              secret:
+                defaultMode: 600
+                secretName: key
           env:
             - name: POSTGRES_USER
               value: '{{ tpl .Values.db.environment.POSTGRES_USER . }}'
