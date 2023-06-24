@@ -24,6 +24,19 @@ spec:
           ports:
             - name: db
               containerPort: 5432
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              add:
+                - DAC_OVERRIDE
+                - CHOWN
+                - SETGID
+                - SETUID
+                - FOWNER
+              drop:
+                - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
           env:
             - name: POSTGRES_USER
               value: '{{ tpl .Values.db.environment.POSTGRES_USER . }}'
