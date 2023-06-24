@@ -36,9 +36,6 @@ spec:
       containers:
         - name: daemon
           image: '{{ .Values.daemon.repository.image }}{{ if ne .Values.daemon.repository.tag "" }}:{{ .Values.daemon.repository.tag }}{{ end }}'
-          ports:
-            - name: daemon
-              containerPort: 3000
           env:
             - name: TOTAL_JOBS
               value: '{{ tpl .Values.daemon.environment.TOTAL_JOBS . }}'
