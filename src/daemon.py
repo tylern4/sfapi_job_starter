@@ -9,6 +9,8 @@ from uuid import uuid4 as uuid_gen
 import sqlalchemy as sqa
 from datetime import datetime
 import os
+from authlib.jose import JsonWebKey
+import json
 
 
 try:
@@ -24,12 +26,12 @@ job_template = """#!/bin/bash
 #SBATCH --account=nstaff
 #SBATCH --time=01:00
 #SBATCH --constraint=cpu
-#SBATCH -N 4
+#SBATCH -N 2
 #SBATCH -J {name}
 #SBATCH -o {scratch_dir}/hostname-%j.out
 #SBATCH -e {scratch_dir}/hostname-%j.err
 
-srun -n 4 -c 2 --cpu_bind=cores hostname
+srun -n 2 -c 2 --cpu_bind=cores hostname
 sleep 4
 """
 
@@ -42,9 +44,13 @@ DB_NAME = os.getenv("DB_NAME", "postgres")
 USER_NAME = os.getenv("USER_NAME", "dastest")
 TOTAL_JOBS = int(os.getenv("TOTAL_JOBS", 0))
 KEY_FILE = os.getenv("KEY_FILE", Path("/keys/superfacility/dev.pem"))
+client_id = os.getenv("SFAPI_CLIENT_ID")
+sfapi_secret = os.getenv("SFAPI_SECRET")
+client_secret = JsonWebKey.import_key(json.loads(sfapi_secret))
+
 PARTITIONS = os.getenv("PARTITIONS", "regular_milan_ss11,gpu_ss11,shared_milan_ss11,shared_gpu_ss11")
 
-DB_UPDATE_TIME = int(os.getenv("DB_UPDATE_TIME", 60))  # once per minute
+DB_UPDATE_TIME = int(os.getenv("DB_UPDATE_TIME", 60))  # once per minutes
 START_NEW_JOBS = int(os.getenv("START_NEW_JOBS", 600))  # once per hour
 
 
@@ -162,9 +168,9 @@ class PoolManagerDaemon:
     Daemon that periodically checks on this site's active runs.
     """
 
-    def __init__(self, conf):
+    def __init__(self):
         logger.info("Initializing pool manager daemon")
-        self.client = Client(key=KEY_FILE)
+        self.client = Client(key=KEY_FILE) if client_secret is None else Client(client_id, client_secret)
         self.compute = self.client.compute(machine=Machine.perlmutter)
         self.script_path = Path.cwd()
         self.total_num_of_jobs = TOTAL_JOBS
@@ -230,6 +236,6 @@ class PoolManagerDaemon:
 
 
 if __name__ == "__main__":
-    pool = PoolManagerDaemon(conf=None)
+    pool = PoolManagerDaemon()
     pool.check_running_and_add_new()
     pool.start_daemon()
