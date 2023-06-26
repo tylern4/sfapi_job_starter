@@ -1,8 +1,0 @@
-# Create on 2023-06-23T23:26:15Z
-# Katenary command line: /usr/local/bin/katenary convert -c docker-compose.yml -o ./charts
-apiVersion: v2
-appVersion: main-d96799d
-description: A helm chart for sfapi_job_starter
-name: sfapi_job_starter
-type: application
-version: 0.1.0
