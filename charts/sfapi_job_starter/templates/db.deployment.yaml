@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: '{{ .Release.Name }}-db'
+  labels:
+    component: db
+    project: '{{ .Chart.Name }}'
+    release: '{{ .Release.Name }}'
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: db
+      release: '{{ .Release.Name }}'
+  template:
+    metadata:
+      labels:
+        component: db
+        release: '{{ .Release.Name }}'
+    spec:
+      containers:
+        - name: db
+          image: '{{ .Values.db.repository.image }}{{ if ne .Values.db.repository.tag "" }}:{{ .Values.db.repository.tag }}{{ end }}'
+          ports:
+            - containerPort: 5432
+              name: db
+              protocol: TCP
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              add:
+                - DAC_OVERRIDE
+                - SETGID
+                - SETUID
+                - CHOWN
+                - FOWNER
+              drop:
+                - ALL
+            privileged: false
+            readOnlyRootFilesystem: false
+          env:
+            - name: POSTGRES_USER
+              value: '{{ tpl .Values.db.environment.POSTGRES_USER . }}'
+            - name: POSTGRES_PASSWORD
+              value: '{{ tpl .Values.db.environment.POSTGRES_PASSWORD . }}'
+          command:
+            - postgres
+            - -c
+            - log_statement=ddl
+            - -c 
+            - max_connections=200
+            - log_destination=stderr
+
