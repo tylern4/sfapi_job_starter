@@ -17,7 +17,7 @@ services:
       DB_PASSWORD: password
       DB_NAME: postgres
       USER_NAME: ${USER_NAME}
-      TOTAL_JOBS: 0
+      TOTAL_JOBS: 1
       DB_UPDATE_TIME: 60
       START_NEW_JOBS: 600
     volumes:
