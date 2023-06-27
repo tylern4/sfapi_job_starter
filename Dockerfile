@@ -7,5 +7,5 @@ RUN pip install --upgrade pip
 ADD requirements.txt /code/requirements.txt
 RUN pip install -r /code/requirements.txt
 
-COPY src/daemon.py /code/daemon.py
+COPY src/*.py /code/
 CMD ["python", "-u", "daemon.py"]

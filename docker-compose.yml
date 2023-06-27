@@ -18,8 +18,8 @@ services:
       DB_NAME: postgres
       USER_NAME: ${USER_NAME}
       TOTAL_JOBS: 1
-      DB_UPDATE_TIME: 60
-      START_NEW_JOBS: 600
+      DB_UPDATE_TIME: 6
+      START_NEW_JOBS: 4
     volumes:
       - ~/.superfacility:/keys/superfacility
     links:
